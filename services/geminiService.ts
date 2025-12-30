@@ -2,8 +2,10 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Product } from "../types";
 
-// Always initialize with the direct process.env.API_KEY variable as per guidelines
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// @ts-ignore - process.env 由 Vite 在构建时注入，忽略 TypeScript 的未定义报错
+const apiKey = process.env.API_KEY;
+
+const ai = new GoogleGenAI({ apiKey: apiKey || "" });
 
 export const getHotelRecommendation = async (
   query: string,
@@ -52,7 +54,6 @@ export const getHotelRecommendation = async (
       }
     });
 
-    // Access the .text property directly and trim it to get the string output
     const jsonStr = response.text?.trim();
     return jsonStr ? JSON.parse(jsonStr) : null;
   } catch (error) {
