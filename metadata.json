@@ -1,5 +1,6 @@
+
 {
-  "name": "尝试导出 LUI Assistant - Low Involvement",
-  "description": "A Language User Interface (LUI) application for conducting 32 trials of hotel selection tasks with post-task surveys.",
+  "name": "hotelluiassistant",
+  "description": "LUI Assistant for hotel selection behavioral experiments.",
   "requestFramePermissions": []
 }
