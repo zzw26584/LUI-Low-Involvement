@@ -11,14 +11,14 @@ export const getHotelRecommendation = async (
   taskInstruction: string,
   objectCount: number
 ) => {
-  // 每次调用前实例化，确保获取最新的 API_KEY
-  const ai = new GoogleGenAI({ apiKey: apiKey || "" });
-
   try {
+    // 调试日志：如果此处输出为空，说明 Vercel 的环境变量没有成功注入到构建流程中
     if (!apiKey) {
-      console.error("API_KEY 环境变量缺失！请在 Vercel 环境设置中添加 API_KEY。");
+      console.error("【关键报错】程序无法读取到 API_KEY。请检查：1. Vercel 变量名是否完全匹配 API_KEY 2. 修改变量后是否点击了 Redeploy。");
       return null;
     }
+
+    const ai = new GoogleGenAI({ apiKey });
 
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -59,7 +59,6 @@ export const getHotelRecommendation = async (
     });
 
     let text = response.text || "";
-    // 鲁棒性处理：剥离可能存在的 Markdown 代码块标记
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       text = jsonMatch[0];
@@ -67,8 +66,7 @@ export const getHotelRecommendation = async (
 
     return JSON.parse(text);
   } catch (error) {
-    console.error("Gemini API 调用异常详情:", error);
-    // 如果是 API Key 相关的报错，这里会详细输出
+    console.error("Gemini API 调用异常:", error);
     return null;
   }
 };
